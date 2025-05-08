@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  rag_app:
+    build: .
+    container_name: az_faq_rag
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./uploads:/app/uploads
+    environment:
+      - PYTHONUNBUFFERED=1
+  
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    # For GPU support (uncomment if needed)
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: 1
+    #          capabilities: [gpu]
+
+volumes:
+  ollama_models:
